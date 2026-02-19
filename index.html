@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 CSS generator toolkit · live preview & copy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .toolkit {
+            max-width: 1400px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* module cards */
+        .module {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px -12px rgba(0,20,50,0.25), 0 0 0 1px rgba(156,192,249,0.3);
+            padding: 1.8rem 2rem;
+            transition: box-shadow 0.2s;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+
+        .module:hover {
+            box-shadow: 0 25px 45px -12px #1e3a8a55;
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .module-header h2 {
+            font-weight: 600;
+            font-size: 1.7rem;
+            background: linear-gradient(145deg, #0b2a4e, #1e3a8a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .module-header span {
+            font-size: 2rem;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1.2fr 0.9fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 800px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        /* control panels */
+        .control-panel {
+            background: #ffffffd6;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: inset 0 1px 4px #e9eef5, 0 6px 12px -10px #1e293b;
+            border: 1px solid white;
+        }
+
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.8rem 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .control-label {
+            font-weight: 500;
+            min-width: 70px;
+            color: #1e293b;
+        }
+
+        input[type="range"], input[type="color"], select {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .color-stop-group {
+            background: #f1f5f9;
+            border-radius: 1.2rem;
+            padding: 0.8rem 1rem;
+            margin: 0.5rem 0;
+        }
+
+        .badge {
+            background: #1e3a8a;
+            color: white;
+            border-radius: 40px;
+            padding: 0.25rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        /* preview boxes */
+        .preview-box {
+            background: #ffffff;
+            border-radius: 2rem;
+            padding: 2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 25px -8px rgba(0,0,0,0.1);
+            border: 1px solid #e9f0fa;
+            min-height: 200px;
+        }
+
+        .preview-area {
+            transition: all 0.2s;
+        }
+
+        /* gradient preview */
+        .gradient-preview {
+            width: 100%;
+            height: 180px;
+            border-radius: 1.5rem;
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+        }
+
+        /* box-shadow preview */
+        .shadow-box {
+            width: 140px;
+            height: 140px;
+            background: #4f7df3;
+            border-radius: 20px;
+        }
+
+        /* clamp text preview */
+        .clamp-text {
+            font-family: 'Times New Roman', serif;
+            background: #eef4ff;
+            padding: 1rem 2rem;
+            border-radius: 3rem;
+            border: 2px dashed #3b82f6;
+            max-width: 100%;
+            word-break: break-word;
+        }
+
+        /* flex/grid preview */
+        .flex-grid-demo {
+            background: #d9e2ef;
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .demo-item {
+            background: #1e3a8a;
+            color: white;
+            border-radius: 1rem;
+            padding: 1rem;
+            min-width: 50px;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* css output */
+        .css-output {
+            background: #0b1a33;
+            color: #bbd7fb;
+            border-radius: 1.2rem;
+            padding: 1rem 1.2rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            border: 1px solid #2d3f60;
+            margin-top: 1.2rem;
+            position: relative;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .copy-btn {
+            background: white;
+            border: none;
+            border-radius: 3rem;
+            padding: 0.3rem 1.2rem;
+            font-weight: 500;
+            color: #0b1a33;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            cursor: pointer;
+            border: 1px solid #cbd5e1;
+            transition: all 0.15s;
+        }
+
+        .copy-btn:hover {
+            background: #eef2ff;
+            border-color: #3b82f6;
+        }
+
+        .copy-btn.copied {
+            background: #1e3a8a;
+            color: white;
+            border-color: #1e3a8a;
+        }
+
+        .row-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 0.5rem;
+        }
+
+        hr {
+            border: 1px solid #e2e8f0;
+            margin: 1.2rem 0;
+        }
+    </style>
+</head>
+<body>
+<div class="toolkit">
+
+    <!-- MODULE 1: GRADIENT GENERATOR -->
+    <section class="module">
+        <div class="module-header"><span>🌈</span><h2>CSS Gradient generator</h2></div>
+        <div class="grid-2col">
+            <div class="control-panel">
+                <div class="control-row">
+                    <span class="control-label">Type</span>
+                    <select id="gradientType">
+                        <option value="linear">linear</option>
+                        <option value="radial">radial</option>
+                        <option value="conic">conic</option>
+                    </select>
+                </div>
+                <div class="control-row">
+                    <span class="control-label">Direction</span>
+                    <input type="text" id="gradDirection" value="90deg" placeholder="e.g. 90deg, circle" style="flex:1;">
+                </div>
+                <div class="color-stop-group">
+                    <label>Color stops (comma separated)</label>
+                    <input type="text" id="gradStops" value="#ff7e5f, #feb47b" style="width:100%; margin-top:6px; padding:0.6rem;">
+                </div>
+                <div class="control-row">
+                    <button class="copy-btn" id="copyGradient">copy CSS</button>
+                </div>
+                <div class="css-output" id="gradientCss">background: linear-gradient(90deg, #ff7e5f, #feb47b);</div>
+            </div>
+            <div class="preview-box">
+                <div class="gradient-preview" id="gradientPreview"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODULE 2: BOX SHADOW GENERATOR -->
+    <section class="module">
+        <div class="module-header"><span>📦</span><h2>Box‑shadow generator (multi‑layer)</h2></div>
+        <div class="grid-2col">
+            <div class="control-panel">
+                <div class="control-row"><span class="control-label">X offset</span><input type="range" id="shadowX" min="-30" max="30" value="6"></div>
+                <div class="control-row"><span class="control-label">Y offset</span><input type="range" id="shadowY" min="-30" max="30" value="6"></div>
+                <div class="control-row"><span class="control-label">Blur</span><input type="range" id="shadowBlur" min="0" max="50" value="12"></div>
+                <div class="control-row"><span class="control-label">Spread</span><input type="range" id="shadowSpread" min="-10" max="30" value="2"></div>
+                <div class="control-row"><span class="control-label">Color</span><input type="color" id="shadowColor" value="#1e3a8a"></div>
+                <div class="control-row"><span class="control-label">Inset</span><input type="checkbox" id="shadowInset"></div>
+                <div class="control-row"><span class="control-label">Extra layer</span><button class="copy-btn" id="addShadowLayer">➕ add as second layer</button></div>
+                <div class="css-output" id="shadowCss">box-shadow: 6px 6px 12px 2px #1e3a8a;</div>
+                <div class="row-buttons"><button class="copy-btn" id="copyShadow">copy CSS</button></div>
+            </div>
+            <div class="preview-box">
+                <div class="shadow-box" id="shadowPreview"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODULE 3: CLAMP() GENERATOR -->
+    <section class="module">
+        <div class="module-header"><span>🔠</span><h2>Clamp() fluid typography</h2></div>
+        <div class="grid-2col">
+            <div class="control-panel">
+                <div class="control-row"><span class="control-label">min (px)</span><input type="number" id="clampMin" value="16" min="8" max="50"> px</div>
+                <div class="control-row"><span class="control-label">pref (vw)</span><input type="number" id="clampPref" value="3" min="0" max="10" step="0.5"> vw</div>
+                <div class="control-row"><span class="control-label">max (px)</span><input type="number" id="clampMax" value="32" min="16" max="100"> px</div>
+                <div class="control-row"><span class="control-label">viewport width</span><input type="range" id="viewportWidth" min="280" max="1600" value="800"> <span id="vwValue">800px</span></div>
+                <div class="css-output" id="clampCss">font-size: clamp(16px, 3vw, 32px);</div>
+                <div class="row-buttons"><button class="copy-btn" id="copyClamp">copy CSS</button></div>
+            </div>
+            <div class="preview-box">
+                <div class="clamp-text" id="clampPreview">The quick brown fox jumps over the lazy dog</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODULE 4: FLEXBOX / GRID GENERATOR -->
+    <section class="module">
+        <div class="module-header"><span>🧩</span><h2>Flexbox & Grid generator</h2></div>
+        <div class="grid-2col">
+            <div class="control-panel">
+                <div class="control-row"><span class="control-label">mode</span>
+                    <select id="layoutMode">
+                        <option value="flex">Flexbox</option>
+                        <option value="grid">CSS Grid</option>
+                    </select>
+                </div>
+                <!-- flex controls (initially visible) -->
+                <div id="flexControls">
+                    <div class="control-row"><span class="control-label">direction</span><select id="flexDirection"><option value="row">row</option><option value="column">column</option></select></div>
+                    <div class="control-row"><span class="control-label">justify</span><select id="justifyContent"><option value="flex-start">flex-start</option><option value="center">center</option><option value="space-between">space-between</option></select></div>
+                    <div class="control-row"><span class="control-label">align</span><select id="alignItems"><option value="stretch">stretch</option><option value="center">center</option></select></div>
+                    <div class="control-row"><span class="control-label">gap</span><input type="number" id="flexGap" value="10" min="0" max="40"> px</div>
+                    <div class="control-row"><span class="control-label">wrap</span><input type="checkbox" id="flexWrap" checked> wrap</div>
+                </div>
+                <!-- grid controls (hidden initially) -->
+                <div id="gridControls" style="display:none;">
+                    <div class="control-row"><span class="control-label">columns</span><input type="text" id="gridCols" value="1fr 1fr" placeholder="e.g. 1fr 1fr"></div>
+                    <div class="control-row"><span class="control-label">rows</span><input type="text" id="gridRows" value="auto" placeholder="auto / 100px"></div>
+                    <div class="control-row"><span class="control-label">gap</span><input type="number" id="gridGap" value="10" min="0"> px</div>
+                </div>
+                <div class="css-output" id="layoutCss">/* flex or grid */ display: flex; gap: 10px;</div>
+                <div class="row-buttons"><button class="copy-btn" id="copyLayout">copy CSS</button></div>
+            </div>
+            <div class="preview-box">
+                <div class="flex-grid-demo" id="layoutPreview">
+                    <div class="demo-item">1</div><div class="demo-item">2</div><div class="demo-item">3</div><div class="demo-item">4</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    (function(){
+        // ---------- helper copy ----------
+        function setupCopy(btnId, getCssFn) {
+            const btn = document.getElementById(btnId);
+            btn.addEventListener('click', function() {
+                const css = getCssFn();
+                navigator.clipboard.writeText(css).then(() => {
+                    btn.textContent = '✅ copied!';
+                    btn.classList.add('copied');
+                    setTimeout(() => { btn.textContent = 'copy CSS'; btn.classList.remove('copied'); }, 1500);
+                });
+            });
+        }
+
+        // ---------- 1. Gradient ----------
+        const gradType = document.getElementById('gradientType');
+        const gradDir = document.getElementById('gradDirection');
+        const gradStops = document.getElementById('gradStops');
+        const gradPreview = document.getElementById('gradientPreview');
+        const gradCssOut = document.getElementById('gradientCss');
+
+        function updateGradient() {
+            const type = gradType.value;
+            const dir = gradDir.value.trim() || (type==='linear'?'90deg':type==='radial'?'circle':'from 0deg');
+            const stops = gradStops.value;
+            let css = `background: ${type}-gradient(${dir}, ${stops});`;
+            gradCssOut.innerText = css;
+            gradPreview.style.background = css.replace('background:','').replace(';','');
+        }
+        [gradType, gradDir, gradStops].forEach(el => el.addEventListener('input', updateGradient));
+        updateGradient();
+        setupCopy('copyGradient', ()=>document.getElementById('gradientCss').innerText);
+
+        // ---------- 2. Box shadow (multi layer) ----------
+        const shadowX = document.getElementById('shadowX');
+        const shadowY = document.getElementById('shadowY');
+        const shadowBlur = document.getElementById('shadowBlur');
+        const shadowSpread = document.getElementById('shadowSpread');
+        const shadowColor = document.getElementById('shadowColor');
+        const shadowInset = document.getElementById('shadowInset');
+        const shadowPreview = document.getElementById('shadowPreview');
+        const shadowCssOut = document.getElementById('shadowCss');
+
+        let extraShadow = '';  // store second layer
+
+        function buildShadow() {
+            let inset = shadowInset.checked ? 'inset ' : '';
+            let base = `${inset}${shadowX.value}px ${shadowY.value}px ${shadowBlur.value}px ${shadowSpread.value}px ${shadowColor.value}`;
+            let full = extraShadow ? base + ', ' + extraShadow : base;
+            shadowCssOut.innerText = `box-shadow: ${full};`;
+            shadowPreview.style.boxShadow = full;
+        }
+
+        function updateShadow() { buildShadow(); }
+        [shadowX, shadowY, shadowBlur, shadowSpread, shadowColor, shadowInset].forEach(el => el.addEventListener('input', updateShadow));
+        document.getElementById('addShadowLayer').addEventListener('click', ()=>{
+            let inset = shadowInset.checked ? 'inset ' : '';
+            let currentLayer = `${inset}${shadowX.value}px ${shadowY.value}px ${shadowBlur.value}px ${shadowSpread.value}px ${shadowColor.value}`;
+            if (extraShadow) extraShadow += ', ' + currentLayer;
+            else extraShadow = currentLayer;
+            buildShadow();
+        });
+        updateShadow();
+        setupCopy('copyShadow', ()=>document.getElementById('shadowCss').innerText);
+
+        // ---------- 3. Clamp + viewport simulation ----------
+        const clampMin = document.getElementById('clampMin');
+        const clampPref = document.getElementById('clampPref');
+        const clampMax = document.getElementById('clampMax');
+        const vwRange = document.getElementById('viewportWidth');
+        const vwSpan = document.getElementById('vwValue');
+        const clampPreview = document.getElementById('clampPreview');
+        const clampCssOut = document.getElementById('clampCss');
+
+        function updateClamp() {
+            const min = clampMin.value;
+            const pref = clampPref.value;
+            const max = clampMax.value;
+            const clampCss = `font-size: clamp(${min}px, ${pref}vw, ${max}px);`;
+            clampCssOut.innerText = clampCss;
+
+            // update preview based on viewport slider
+            const vw = vwRange.value;
+            vwSpan.innerText = vw + 'px';
+            // simulate clamp: compute value at given viewport (just for preview)
+            const preferred = (pref * vw) / 100;
+            let finalSize = Math.min(max, Math.max(min, preferred));
+            clampPreview.style.fontSize = finalSize + 'px';
+        }
+        [clampMin, clampPref, clampMax, vwRange].forEach(el => el.addEventListener('input', updateClamp));
+        updateClamp();
+        setupCopy('copyClamp', ()=>document.getElementById('clampCss').innerText);
+
+        // ---------- 4. Flex / Grid generator ----------
+        const layoutMode = document.getElementById('layoutMode');
+        const flexDiv = document.getElementById('flexControls');
+        const gridDiv = document.getElementById('gridControls');
+        const layoutPreview = document.getElementById('layoutPreview');
+        const layoutCssOut = document.getElementById('layoutCss');
+
+        // flex elements
+        const flexDir = document.getElementById('flexDirection');
+        const flexJustify = document.getElementById('justifyContent');
+        const flexAlign = document.getElementById('alignItems');
+        const flexGap = document.getElementById('flexGap');
+        const flexWrap = document.getElementById('flexWrap');
+
+        // grid elements
+        const gridCols = document.getElementById('gridCols');
+        const gridRows = document.getElementById('gridRows');
+        const gridGap = document.getElementById('gridGap');
+
+        function updateLayout() {
+            const mode = layoutMode.value;
+            if (mode === 'flex') {
+                flexDiv.style.display = 'block';
+                gridDiv.style.display = 'none';
+                let direction = flexDir.value;
+                let justify = flexJustify.value;
+                let align = flexAlign.value;
+                let gap = flexGap.value + 'px';
+                let wrap = flexWrap.checked ? 'wrap' : 'nowrap';
+                let css = `display: flex;\nflex-direction: ${direction};\njustify-content: ${justify};\nalign-items: ${align};\ngap: ${gap};\nflex-wrap: ${wrap};`;
+                layoutCssOut.innerText = css;
+
+                layoutPreview.style.display = 'flex';
+                layoutPreview.style.flexDirection = direction;
+                layoutPreview.style.justifyContent = justify;
+                layoutPreview.style.alignItems = align;
+                layoutPreview.style.gap = gap;
+                layoutPreview.style.flexWrap = wrap;
+                // remove grid props
+                layoutPreview.style.display = 'flex';
+            } else {
+                flexDiv.style.display = 'none';
+                gridDiv.style.display = 'block';
+                let cols = gridCols.value || '1fr 1fr';
+                let rows = gridRows.value || 'auto';
+                let gap = gridGap.value + 'px';
+                let css = `display: grid;\ngrid-template-columns: ${cols};\ngrid-template-rows: ${rows};\ngap: ${gap};`;
+                layoutCssOut.innerText = css;
+
+                layoutPreview.style.display = 'grid';
+                layoutPreview.style.gridTemplateColumns = cols;
+                layoutPreview.style.gridTemplateRows = rows;
+                layoutPreview.style.gap = gap;
+            }
+        }
+
+        layoutMode.addEventListener('change', updateLayout);
+        // flex listeners
+        [flexDir, flexJustify, flexAlign, flexGap, flexWrap].forEach(el => el.addEventListener('input', updateLayout));
+        // grid listeners
+        [gridCols, gridRows, gridGap].forEach(el => el.addEventListener('input', updateLayout));
+        updateLayout();
+        setupCopy('copyLayout', ()=>document.getElementById('layoutCss').innerText);
+
+        // extra for layout initial demo
+        // ensure wrap checkbox sync
+        flexWrap.addEventListener('change', updateLayout);
+    })();
+</script>
+
+<!-- additional inline style for consistency -->
+<style>
+    /* fine tune */
+    .control-row input[type="number"] { width: 80px; padding: 0.4rem; border-radius: 2rem; border: 1px solid #cbd5e1; }
+    .control-row select { padding: 0.4rem 1rem; border-radius: 2rem; background: #f8fafc; }
+    .demo-item { background: linear-gradient(145deg, #2563eb, #1e3a8a); color: white; }
+    .clamp-text { background: #f8fafc; }
+    #gradientPreview, .shadow-box { transition: box-shadow 0.1s, background 0.1s; }
+    .copy-btn { margin-left: 0.5rem; }
+</style>
+
+</body>
+</html>
